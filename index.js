@@ -1,12 +1,14 @@
 var drumButton = document.querySelectorAll(".set .drum");
 
 document.addEventListener("keydown", drumFunction)
+document.addEventListener("keyup", drumFunction)
 
 for (var i = 0; i < drumButton.length; i++) {
-  drumButton[i].addEventListener("click", drumFunction);
+  drumButton[i].addEventListener("mousedown", drumFunction);
+  drumButton[i].addEventListener("mouseup", drumFunction);
 }
 
-function drumFunction(e){
+function drumFunction(eventListener){
   var drumSound = {
     w: new Audio('sounds/tom-1.mp3'),
     a: new Audio('sounds/tom-2.mp3'),
@@ -18,27 +20,33 @@ function drumFunction(e){
   }
 
   var eventElement = {
-    click: e.type === "keydown" ? "" :e.srcElement.classList[0],
-    key: e.key
+    w: drumButton[0],
+    a: drumButton[1],
+    s: drumButton[2],
+    d: drumButton[3],
+    j: drumButton[4],
+    k: drumButton[5],
+    l: drumButton[6],
+    mouseNameClass: eventListener.type === "keydown"
+    ? ""
+    :eventListener.srcElement.classList[0],
+    keyName: eventListener.key
   }
 
-  if (eventElement.click === "w" || eventElement.key === "w") {
-    drumSound.w.play();
-  }else if (eventElement.click === "a" || eventElement.key === "a") {
-    drumSound.a.play();
-  }else if (eventElement.click === "s" || eventElement.key === "s") {
-    drumSound.s.play();
-  }else if (eventElement.click === "d" || eventElement.key === "d") {
-    drumSound.d.play();
-  }else if (eventElement.click === "j" || eventElement.key === "j") {
-    drumSound.j.play();
-  }else if (eventElement.click === "k" || eventElement.key === "k") {
-    drumSound.k.play();
-  }else if (eventElement.click === "l" || eventElement.key === "l") {
-    drumSound.l.play();
-  }else {
-    console.log("nosound");
+  if (eventListener.type === "keydown" || eventListener.type === "mousedown") {
+    for (var sounds in drumSound) {
+      if (eventElement.mouseNameClass === sounds || eventElement.keyName === sounds) {
+        drumSound[sounds].play();
+        eventElement[sounds].classList.add('red');
+      }
+    }
   }
-  console.log(`click: ${eventElement.click} key: ${eventElement.key}`);
-  console.log(e.srcElement.className);
+
+  if (eventListener.type === "mouseup" || eventListener.type === "keyup") {
+    for (var word in eventElement) {
+      if (eventElement.mouseNameClass === word || eventElement.keyName === word) {
+        eventElement[word].classList.remove('red');
+      }
+    }
+  }
 }
